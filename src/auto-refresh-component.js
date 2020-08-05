@@ -1,6 +1,31 @@
 class autoRefreshComponent {
     refreshElement = []
 
+    run() {
+        setInterval(() => {
+            if (document.visibilityState === 'visible') {
+                this.startReload();
+            } else {
+                this.stopRefresh();
+            }
+        }, 500);
+    }
+
+    startReload() {
+        if (this.refreshElement.length === 0) {
+            this.refreshComponents()
+        }
+    }
+
+    stopRefresh() {
+        if (this.refreshElement.length > 0) {
+            for (let i = 0; i < this.refreshElement.length; i++) {
+                clearInterval(this.refreshElement[i])
+            }
+            this.refreshElement = []
+        }
+    }
+
     refreshComponents() {
         const components = document.querySelectorAll('[load-component]');
         for (let i = 0; i < components.length; i++) {
@@ -25,23 +50,5 @@ class autoRefreshComponent {
         xhttp.open("GET", element.getAttribute("load-component"), false);
         xhttp.send();
         element.innerHTML = xhttp.responseText;
-    }
-
-    run() {
-        console.log(this.refreshElement.length);
-        setInterval(() => {
-            if (document.visibilityState === 'visible') {
-                if (this.refreshElement.length === 0) {
-                    this.refreshComponents()
-                }
-            } else {
-                if (this.refreshElement.length > 0) {
-                    for (let i = 0; i < this.refreshElement.length; i++) {
-                        clearInterval(this.refreshElement[i])
-                    }
-                    this.refreshElement = []
-                }
-            }
-        }, 500);
     }
 }
