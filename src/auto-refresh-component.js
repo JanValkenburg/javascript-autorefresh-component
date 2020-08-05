@@ -46,9 +46,14 @@ class autoRefreshComponent {
     }
 
     load(element) {
+        let url = element.getAttribute("load-component");
         let xhttp = new XMLHttpRequest();
-        xhttp.open("GET", element.getAttribute("load-component"), false);
+        xhttp.onreadystatechange = function () {
+            if (this.status >= 200 && this.status < 300) {
+                element.innerHTML = xhttp.responseText;
+            }
+        }
+        xhttp.open("GET", url, true);
         xhttp.send();
-        element.innerHTML = xhttp.responseText;
     }
 }
