@@ -1,5 +1,7 @@
 class autoRefreshComponent {
+
     refreshElement = []
+    isLoading = {};
 
     run() {
         setInterval(() => {
@@ -53,7 +55,13 @@ class autoRefreshComponent {
                 element.innerHTML = xhttp.responseText;
             }
         }
-        xhttp.open("GET", url, true);
-        xhttp.send();
+        xhttp.onloadend = () => {
+            this.isLoading[url] = false;
+        }
+        if (this.isLoading[url] === undefined || this.isLoading[url] === false) {
+            this.isLoading[url] = true;
+            xhttp.open("GET", url, true);
+            xhttp.send();
+        }
     }
 }
