@@ -48,14 +48,12 @@ class autoRefreshComponent {
     }
 
     load(element) {
-
         // let name = element.getAttribute('name');
         let url = element.getAttribute("load-component");
         let scrollableContainer = element.getAttribute("scrollable-container");
         let xhttp = new XMLHttpRequest();
         let thisIsTop = this;
         // let selector = null;
-
         let scrollTop = 0;
         if (scrollableContainer) {
             if (thisIsTop.content[url] !== undefined) {
@@ -70,9 +68,10 @@ class autoRefreshComponent {
                     thisIsTop.content[url] = xhttp.responseText;
                     element.innerHTML = xhttp.responseText;
                     if (scrollTop) {
-                        // console.log(scrollTop);
-                        // console.log(scrollableContainer);
-                        element.querySelector(scrollableContainer).scrollTop = scrollTop
+                        const scrollableElement = element.querySelector(scrollableContainer)
+                        if (scrollableElement) {
+                            scrollableElement.scrollTop = scrollTop
+                        }
                     }
                 } else {
                     console.log('no');
@@ -83,7 +82,6 @@ class autoRefreshComponent {
         xhttp.onloadend = () => {
             this.isLoading[url] = false;
         }
-
         if (this.isLoading[url] === undefined || this.isLoading[url] === false) {
             this.isLoading[url] = true;
             xhttp.open("GET", url, true);
