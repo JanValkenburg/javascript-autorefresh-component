@@ -2,6 +2,7 @@ class autoRefreshComponent {
 
     refreshElement = []
     isLoading = {};
+    content = {};
 
     run() {
         setInterval(() => {
@@ -48,37 +49,29 @@ class autoRefreshComponent {
     }
 
     load(element) {
-        // let name = element.getAttribute('name');
         let url = element.getAttribute("load-component");
         let scrollableContainer = element.getAttribute("scrollable-container");
         let xhttp = new XMLHttpRequest();
         let thisIsTop = this;
-        // let selector = null;
         let scrollTop = 0;
         if (scrollableContainer) {
             if (thisIsTop.content[url] !== undefined) {
-                // selector = '[name="' + name + '"] ' + scrollableContainer;
                 scrollTop = element.querySelector(scrollableContainer).scrollTop
             }
         }
 
-        xhttp.onreadystatechange = function () {
-            if (this.status >= 200 && this.status < 300) {
-                if (thisIsTop.content[url] !== xhttp.responseText) {
-                    thisIsTop.content[url] = xhttp.responseText;
-                    element.innerHTML = xhttp.responseText;
-                    if (scrollTop) {
-                        const scrollableElement = element.querySelector(scrollableContainer)
-                        if (scrollableElement) {
-                            scrollableElement.scrollTop = scrollTop
-                        }
+        xhttp.onload = function () {
+            if (thisIsTop.content[url] !== xhttp.responseText.length) {
+                thisIsTop.content[url] = xhttp.responseText.length;
+                element.innerHTML = xhttp.responseText;
+                if (scrollTop) {
+                    const scrollableElement = element.querySelector(scrollableContainer)
+                    if (scrollableElement) {
+                        scrollableElement.scrollTop = scrollTop
                     }
-                } else {
-                    console.log('no');
                 }
             }
         }
-
         xhttp.onloadend = () => {
             this.isLoading[url] = false;
         }
